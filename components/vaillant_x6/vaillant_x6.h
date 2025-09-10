@@ -4,6 +4,8 @@
 #include "esphome/components/uart/uart.h"
 #include "request_response_handler.h"
 #include "command.h"
+#include <vector>
+#include <cstdint>
 
 namespace esphome {
 namespace vaillant_x6 {
@@ -29,6 +31,9 @@ class VaillantX6Component : public PollingComponent, public uart::UARTDevice {
         std::string response_type,
         std::vector<uint8_t> request_bytes,
         int poll_interval);
+
+    // Service method to send generic commands
+    void send_command(uint8_t command_byte, std::vector<uint8_t> payload, uint8_t expected_response_payload_length);
 
   protected:
     bool is_response_complete_();

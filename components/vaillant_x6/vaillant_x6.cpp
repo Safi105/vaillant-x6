@@ -167,5 +167,31 @@ void GetOnOffStatusCommand::process_response(uint8_t* response) {
     sensor->publish_state(is_on);
 }
 
+// ------------------------------------------------------------------------
+// Service method to send generic commands to the boiler
+// ------------------------------------------------------------------------
+void VaillantX6Component::send_command(uint8_t command_byte, std::vector<uint8_t> payload, uint8_t expected_response_payload_length) {
+    std::vector<uint8_t> bytes = {0x07, 0x00, 0x00, 0x00, command_byte};
+    bytes.insert(bytes.end(), payload.begin(), payload.end());
+    bytes.push_back(expected_response_payload_length);
+
+    // compute checksum
+    uint8_t cs = 0;
+    for (auto current_byte : bytes) {
+        if (cs & 0x80) {
+            cs = ((cs << 1) | 1) & 0xFF;
+            cs ^= 0x18;
+        } else {
+            cs = (cs << 1) & 0xFF;
+        }
+        cs ^= current_byte;
+    }
+    bytes.push_back(cs);
+
+    // write directly to UART
+    this->write_array(bytes);
+}
+// ------------------------------------------------------------------------
+
 } // namespace vaillant_x6
 } // namespace esphome
