@@ -1,0 +1,8 @@
+{
+  "domain": "vaillant_x6",
+  "name": "Vaillant X6",
+  "version": "0.1",
+  "dependencies": ["uart"],
+  "codeowners": ["@Safi105"],
+  "requirements": []
+}
